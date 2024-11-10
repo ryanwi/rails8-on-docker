@@ -1,0 +1,18 @@
+services:
+  web:
+    build:
+      context: ./
+      dockerfile: development.Dockerfile
+    command: bash -c "rm -f tmp/pids/server.pid && bin/rails s -p 3000 -b '0.0.0.0'"
+    volumes:
+      - .:/usr/src/app
+      - bundle:/usr/local/bundle
+    ports:
+      - "3000:3000"
+    # env_file:
+    #   - .env
+    # environment:
+    #   - HISTFILE=/usr/src/app/log/.bash_history
+
+volumes:
+  bundle:
