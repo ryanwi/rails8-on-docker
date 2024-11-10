@@ -7,8 +7,9 @@ Start here: https://github.com/ryanwi/rails8-on-docker/generate
 
 **NOTE:** There are also examples Rails 6 and Rails 7 applications working in Docker
 
-* Rails 7: https://github.com/ryanwi/rails7-on-docker
-* Rails 6: https://github.com/ryanwi/rails-on-docker
+* [Rails 8 Applicaiton Docker Template](https://github.com/ryanwi/rails8-on-docker)
+* [Rails 7 Applicaiton Docker Template](https://github.com/ryanwi/rails7-on-docker)
+* [Rails 6 Application Docker Template](https://github.com/ryanwi/rails-on-docker)
 
 ## Features
 
