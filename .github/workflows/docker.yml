@@ -1,0 +1,65 @@
+name: Docker
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  TEST_TAG: rails-on-docker:test
+
+jobs:
+  build-and-test-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          push: false
+          load: true
+          tags: ${{ env.TEST_TAG }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Inspect
+        run: |
+          docker image inspect ${{ env.TEST_TAG }}
+
+      - name: Start
+        run: |
+          docker run -d --rm --name=rails-on-docker --env SECRET_KEY_BASE=dummy ${{ env.TEST_TAG }}
+
+      - name: Logs
+        run: |
+          docker ps
+          docker logs rails-on-docker
+
+      - name: Check Health
+        run: |
+          for i in {1..30}; do
+            status=$(docker inspect --format='{{.State.Health.Status}}' rails-on-docker)
+            if [ "$status" = "healthy" ]; then
+              echo "Container is healthy"
+              exit 0
+            elif [ "$status" = "unhealthy" ]; then
+              echo "Container is unhealthy"
+              exit 1
+            fi
+            sleep 1
+          done
+          echo "Timed out waiting for container to become healthy"
+          exit 1
+
+      - name: Logs
+        run: |
+          docker logs rails-on-docker
